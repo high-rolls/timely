@@ -1,0 +1,17 @@
+{% extends 'timelines/base.html' %}
+<!-- displays a list of events -->
+{% block title %}{{ timeline.name }}{% endblock %}
+
+{% block content %}
+<div class="timeline">
+    <h1>{{ timeline.name }}</h1>
+    <p>{{ timeline.description }}</p>
+    {% for event in events %}
+        <div class="event">
+            <h2>{{ event.name }}</h2>
+            <p>{{ event.description }}</p>
+            <p>{{ event.start_date|date:"Y-m-d" }} - {{ event.end_date|date:"Y-m-d" }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -10,7 +10,11 @@ def index(request):
     return render(request, 'timelines/index.html', context=context)
 
 def timeline(request, timeline_id):
-    return HttpResponse("Hello from timeline %s!" % timeline_id)
+    context = {
+        'timeline': Timeline.objects.get(pk=timeline_id),
+        'events': Event.objects.filter(timeline=timeline_id).order_by('start_date'),
+    }
+    return render(request, 'timelines/timeline.html', context=context)
 
 def event(request, event_id):
     return HttpResponse("Hello from event %s!" % event_id)

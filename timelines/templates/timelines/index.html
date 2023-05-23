@@ -1,8 +1,6 @@
-<!-- displays all timelines as a list of clickable headers -->
-<!-- import static/style.css -->
-{% load static %}
-<link rel="stylesheet" href="{% static 'timelines/style.css' %}">
-<!-- show a button to add a new timeline -->
+{% extends 'timelines/base.html' %}
+{% block title %}Timelines{% endblock %}
+{% block content %}
 <a href="{% url 'timelines:add_timeline' %}">Add a new timeline</a>
 <!-- each header links to the timeline's page -->
 {% for timeline in timelines %}
@@ -11,3 +9,4 @@
     <p>{{ timeline.description }}</p>
 </div>
 {% endfor %}
+{% endblock %}

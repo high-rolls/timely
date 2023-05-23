@@ -6,12 +6,28 @@ class TimelinesTestCase(TestCase):
     def test_index(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Hello from timely!")
+        self.assertContains(response, "Timelines")
     
     def test_timeline(self):
+        timeline = Timeline.objects.create(
+            name="Test Timeline", description="A test timeline")
+        timeline.event_set.create(
+            name="Test Event 1",
+            description="A test event",
+            start_date=timezone.now(),
+            end_date=timezone.now() + timezone.timedelta(days=1))
+        timeline.event_set.create(
+            name="Test Event 2",
+            description="Another test event",
+            start_date=timezone.now() + timezone.timedelta(days=1),
+            end_date=timezone.now() + timezone.timedelta(days=2))
         response = self.client.get('/timeline/1/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Hello from timeline 1!")
+        self.assertContains(response, "Test Timeline")
+        self.assertEqual(response.context['timeline'], timeline)
+        self.assertQuerysetEqual(
+            response.context['events'],
+            timeline.event_set.all().order_by('start_date'))
     
     def test_event(self):
         response = self.client.get('/event/1/')
