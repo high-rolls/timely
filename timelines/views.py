@@ -1,12 +1,21 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from django.urls import reverse
+from .models import Timeline, Event
 
 def index(request):
-    return HttpResponse("Hello from timely!")
+    context = {
+        'timelines': Timeline.objects.all().order_by('-created_date'),
+    }
+    return render(request, 'timelines/index.html', context=context)
 
 def timeline(request, timeline_id):
     return HttpResponse("Hello from timeline %s!" % timeline_id)
 
 def event(request, event_id):
     return HttpResponse("Hello from event %s!" % event_id)
+
+def add_timeline(request):
+    timeline = Timeline(name="Test Timeline", description="A test timeline")
+    timeline.save()
+    return HttpResponse("Added timeline %s!" % timeline.id)

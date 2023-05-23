@@ -5,6 +5,7 @@ from django.db import models
 class Timeline(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
+    created_date = models.DateTimeField('date created', default=timezone.now)
 
     def __str__(self):
         return self.name
