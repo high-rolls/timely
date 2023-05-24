@@ -1,7 +1,7 @@
 {% extends 'timelines/base.html' %}
 {% block title %}Timelines{% endblock %}
 {% block content %}
-<a href="{% url 'timelines:add_timeline' %}">Add a new timeline</a>
+<a href="{% url 'timelines:create_timeline' %}">Add a new timeline</a>
 <!-- each header links to the timeline's page -->
 {% for timeline in timelines %}
 <div class="timeline">

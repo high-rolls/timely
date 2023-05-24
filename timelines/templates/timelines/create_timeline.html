@@ -1,0 +1,21 @@
+{% extends 'timelines/base.html' %}
+{% block title %}Create Timeline{% endblock title %}
+{% block content %}
+    <h2>Create Timeline</h2>
+    <form action="{% url 'timelines:create_timeline' %}" method="post" class="form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <!-- text input for description -->
+        <div class="mb-3">
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description" class="form-control" required>
+        </div>
+        <!-- submit button -->
+        <button type="submit" class="btn btn-primary">Create</button>
+        <!-- cancel button -->
+        <a href="{% url 'timelines:index' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

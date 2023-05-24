@@ -1,9 +1,4 @@
-.timeline {
-    margin-top: 20px;
-    border-top: 1px solid #ccc;
-}
-
-.event {
-    margin-left: 20px;
-    border-top: 1px solid #7e7e7e;
+.link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+    color: inherit;
+    text-decoration: inherit;
 }

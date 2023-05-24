@@ -3,15 +3,157 @@
 {% block title %}{{ timeline.name }}{% endblock %}
 
 {% block content %}
-<div class="timeline">
-    <h1>{{ timeline.name }}</h1>
-    <p>{{ timeline.description }}</p>
-    {% for event in events %}
-        <div class="event">
-            <h2>{{ event.name }}</h2>
-            <p>{{ event.description }}</p>
-            <p>{{ event.start_date|date:"Y-m-d" }} - {{ event.end_date|date:"Y-m-d" }}</p>
+<script>
+    function startCountDown(elemIndex, startDate, endDate) {
+        var elem = document.getElementById("timeCounter" + elemIndex);
+        var card = document.getElementById("card" + elemIndex);
+        if (elem == null || card == null) {
+            return;
+        }
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            if (now < startDate) {
+                elem.innerHTML = "Starts in " + dateDifferenceAsString(startDate - now);
+                elem.classList.add("text-dark");
+                card.classList.add("bg-warning");
+                card.classList.add("text-dark");
+            } else if (now < endDate) {
+                elem.innerHTML = "Ends in " + dateDifferenceAsString(endDate - now);
+                elem.classList.add("text-white");
+                card.classList.add("bg-success");
+                card.classList.add("text-white");
+            } else {
+                elem.innerHTML = "Ended " + dateDifferenceAsString(now - endDate) + " ago";
+                elem.classList.add("text-white");
+                card.classList.add("bg-dark");
+                card.classList.add("text-white");
+            }
+        }, 1000);
+    }
+    
+    
+    function dateDifferenceAsString(distance) {
+        var distanceDate = new Date(distance);
+        var years = distanceDate.getFullYear() - 1970;
+        var months = distanceDate.getMonth();
+        var days = distanceDate.getDate() - 1;
+        var hours = distanceDate.getHours();
+        var minutes = distanceDate.getMinutes();
+        var seconds = distanceDate.getSeconds();
+        var stringParts = [];
+        if (years > 0) {
+            stringParts.push(years + " years");
+        }
+        if (months > 0) {
+            stringParts.push(months + " months");
+        }
+        if (days > 0) {
+            stringParts.push(days + " days");
+        }
+        if (hours > 0) {
+            stringParts.push(hours + " hours");
+        }
+        if (minutes > 0) {
+            stringParts.push(minutes + " minutes");
+        }
+        if (seconds > 0) {
+            stringParts.push(seconds + " seconds");
+        }
+        return stringParts.join(", ");
+    }
+</script>
+<div class="row bg-light">
+    <div class="col">
+        <h1>{{ timeline.name }}</h1>
+        <p>{{ timeline.description }}</p>
+    </div>
+    <div class="col-md-auto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTimelineModal">
+            Edit
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTimelineModal">
+            Delete
+        </button>
+    </div>
+</div>
+{% for event in events %}
+    <div class="card mb-3" id="card{{ forloop.counter }}">
+        <div class="card-header">
+            <a class="float-end link-unstyled" type="button" data-bs-toggle="modal" data-bs-target="#editEventModal">
+                <i class="fa-solid fa-pencil"></i>
+            </a>
+            <a class="float-end link-unstyled fg-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+                <i class="fa-solid fa-trash"></i>
+            </a>
+            <span class="badge" id="timeCounter{{ forloop.counter }}"></span>
+            <script>
+                startCountDown({{ forloop.counter }}, new Date("{{ event.start_date.isoformat }}").getTime(), new Date("{{ event.end_date.isoformat }}").getTime());
+            </script>
         </div>
-    {% endfor %}
+        <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text">{{ event.description }}</p>
+        </div>
+        <div class="card-footer">
+            <p><small>from {{ event.start_date }} to {{ event.end_date }}</small></p>
+        </div>
+    </div>
+{% endfor %}
+<div class="row">
+    <!-- add event button -->
+    <div class="col">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+            Add Event
+        </button>
+    </div>
+</div>
+    <!-- Modal -->
+<div class="modal fade" id="deleteTimelineModal" tabindex="-1" aria-labelledby="deleteTimelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Timeline</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        Do you really want to delete this timeline?
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <form action="{% url 'timelines:delete_timeline' timeline.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes</button>
+        </form>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- edit timeline modal -->
+<div class="modal fade" id="editTimelineModal" aria-labelledby="editTimelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTimelineModalLabel">Edit Timeline</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'timelines:edit_timeline' timeline.id %}" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" value="{{ timeline.name }}" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description">{{ timeline.description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
