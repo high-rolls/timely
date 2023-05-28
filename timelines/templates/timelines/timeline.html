@@ -1,11 +1,11 @@
-{% extends 'timelines/base.html' %}
+{% extends "timelines/base.html" %}
 <!-- displays a list of events -->
-{% block title %}{{ timeline.name }}{% endblock %}
+{% block title %}{{ timeline.name }}{% endblock title %}
 
 {% block content %}
 {% load static %}
 <script src="{% static 'timelines/timeline.js' %}"></script>
-<div class="row bg-light">
+<div class="row bg-light mb-3">
     <div class="col">
         <h1>{{ timeline.name }}</h1>
         <p>{{ timeline.description }}</p>
@@ -19,35 +19,39 @@
         </button>
     </div>
 </div>
-{% for event in events %}
-    <div class="card mb-3" id="card{{ forloop.counter }}">
-        <div class="card-header">
-            <div class="row">
-                <div class="col">
-                    <span class="badge" id="timeCounter{{ forloop.counter }}"></span>
-                    <script>
-                        startCountDown({{ forloop.counter }}, new Date("{{ event.start_date.isoformat }}").getTime(), new Date("{{ event.end_date.isoformat }}").getTime());
-                    </script>
+<div class="row">
+    {% for event in events %}
+        <div class="col-lg-6 col-xxl-4 d-flex align-items-stretch">
+            <div class="card mb-3 w-100" id="card{{ forloop.counter }}">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <span class="badge text-wrap" id="timeCounter{{ forloop.counter }}"></span>
+                            <script>
+                                startCountDown({{ forloop.counter }}, new Date("{{ event.start_date.isoformat }}").getTime(), new Date("{{ event.end_date.isoformat }}").getTime());
+                            </script>
+                        </div>
+                        <div class="col-md-auto">
+                            <a class="link-unstyled mr1" type="button" data-bs-toggle="modal" data-bs-target="#editEventModal">
+                                <i class="fa-solid fa-pencil"></i>
+                            </a>
+                            <a class="link-unstyled fg-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-auto">
-                    <a class="link-unstyled mr1" type="button" data-bs-toggle="modal" data-bs-target="#editEventModal">
-                        <i class="fa-solid fa-pencil"></i>
-                    </a>
-                    <a class="link-unstyled fg-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <p><small>from {{ event.start_date }} to {{ event.end_date }}</small></p>
                 </div>
             </div>
         </div>
-        <div class="card-body">
-            <h5 class="card-title">{{ event.name }}</h5>
-            <p class="card-text">{{ event.description }}</p>
-        </div>
-        <div class="card-footer">
-            <p><small>from {{ event.start_date }} to {{ event.end_date }}</small></p>
-        </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+</div>
 <div class="row">
     <!-- add event button -->
     <div class="col">
@@ -118,7 +122,7 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" value="" class="form-control" id="name" name="name">
+                        <input type="text" value="" class="form-control" id="name" name="name" required aria-required="true">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
@@ -126,7 +130,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="start_date" class="form-label">Start Date</label>
-                        <input type="date" value="" class="form-control" id="start_date" name="start_date">
+                        <input type="date" value="" class="form-control" id="start_date" name="start_date" required aria-required="true">
                     </div>
                     <div class="mb-3">
                         <label for="end_date" class="form-label">End Date</label>
@@ -134,7 +138,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="start_time" class="form-label">Start Time</label>
-                        <input type="time" value="" class="form-control" id="start_time" name="start_time">
+                        <input type="time" value="" class="form-control" id="start_time" name="start_time" required aria-required="true">
                     </div>
                     <div class="mb-3">
                         <label for="end_time" class="form-label">End Time</label>
@@ -149,4 +153,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}
