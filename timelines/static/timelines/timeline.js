@@ -33,12 +33,12 @@ function updateCountDown(id, startDate, endDate) {
 
 function dateDifferenceAsString(distance) {
     var distanceDate = new Date(distance);
-    var years = distanceDate.getFullYear() - 1970;
-    var months = distanceDate.getMonth();
-    var days = distanceDate.getDate() - 1;
-    var hours = distanceDate.getHours();
-    var minutes = distanceDate.getMinutes();
-    var seconds = distanceDate.getSeconds();
+    var years = distanceDate.getUTCFullYear() - 1970;
+    var months = distanceDate.getUTCMonth();
+    var days = distanceDate.getUTCDate() - 1;
+    var hours = distanceDate.getUTCHours();
+    var minutes = distanceDate.getUTCMinutes();
+    var seconds = distanceDate.getUTCSeconds();
     var stringParts = [];
     if (years > 0) {
         stringParts.push(years + " years");

@@ -4,6 +4,7 @@
 
 {% block content %}
 {% load static %}
+{% load tz %}
 <script src="{% static 'timelines/timeline.js' %}"></script>
 <div class="row bg-light mb-3">
     <div class="col">
@@ -46,7 +47,7 @@
                     <p class="card-text">{{ event.description }}</p>
                 </div>
                 <div class="card-footer">
-                    <p><small>from {{ event.start_date }} to {{ event.end_date }}</small></p>
+                    <p><small>from {{ event.start_date|localtime }} to {{ event.end_date|localtime }}</small></p>
                 </div>
             </div>
         </div>
