@@ -1,28 +1,33 @@
-function startCountDown(elemIndex, startDate, endDate) {
-    var elem = document.getElementById("timeCounter" + elemIndex);
-    var card = document.getElementById("card" + elemIndex);
-    if (elem == null || card == null) {
+function startCountDown(id, startDate, endDate) {
+    updateCountDown(id, startDate, endDate);
+    var x = setInterval(function() {
+        updateCountDown(id, startDate, endDate);
+    }, 1000);
+}
+
+function updateCountDown(id, startDate, endDate) {
+    var badge = document.getElementById("timeCounter" + id);
+    var card = document.getElementById("card" + id);
+    if (badge == null || card == null) {
         return;
     }
-    var x = setInterval(function() {
-        var now = new Date().getTime();
-        if (now < startDate) {
-            elem.innerHTML = "Starts in " + dateDifferenceAsString(startDate - now);
-            elem.classList.add("text-dark");
-            card.classList.add("bg-warning");
-            card.classList.add("text-dark");
-        } else if (now < endDate) {
-            elem.innerHTML = "Ends in " + dateDifferenceAsString(endDate - now);
-            elem.classList.add("text-white");
-            card.classList.add("bg-success");
-            card.classList.add("text-white");
-        } else {
-            elem.innerHTML = "Ended " + dateDifferenceAsString(now - endDate) + " ago";
-            elem.classList.add("text-white");
-            card.classList.add("bg-dark");
-            card.classList.add("text-white");
-        }
-    }, 1000);
+    var now = new Date().getTime();
+    if (now < startDate) {
+        badge.innerHTML = "Starts in " + dateDifferenceAsString(startDate - now);
+        badge.classList.add("text-dark");
+        card.classList.add("bg-warning");
+        card.classList.add("text-dark");
+    } else if (now < endDate) {
+        badge.innerHTML = "Ends in " + dateDifferenceAsString(endDate - now);
+        badge.classList.add("text-white");
+        card.classList.add("bg-success");
+        card.classList.add("text-white");
+    } else {
+        badge.innerHTML = "Ended " + dateDifferenceAsString(now - endDate) + " ago";
+        badge.classList.add("text-white");
+        card.classList.add("bg-dark");
+        card.classList.add("text-white");
+    }
 }
 
 
