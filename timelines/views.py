@@ -42,7 +42,15 @@ def event(request, event_id):
 
 def create_event(request, timeline_id):
     if request.method == 'POST':
-        event = Event(timeline=Timeline.objects.get(pk=timeline_id), name=request.POST['name'], description=request.POST['description'], start_date=request.POST['start_date'], end_date=request.POST['end_date'])
+        start_date = request.POST['start_date'] + ' ' + request.POST['start_time']
+        end_date = request.POST['end_date'] + ' ' + request.POST['end_time']
+        event = Event(
+            timeline=Timeline.objects.get(pk=timeline_id),
+            name=request.POST['name'],
+            description=request.POST['description'],
+            start_date=start_date,
+            end_date=end_date,
+        )
         event.save()
         return HttpResponseRedirect(reverse('timelines:timeline', args=(timeline_id,)))
     return render(request, 'timelines/create_event.html', context={'timeline_id': timeline_id})
