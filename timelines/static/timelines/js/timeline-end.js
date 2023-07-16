@@ -32,3 +32,16 @@ end_date.addEventListener("change", function() {
         end_date.value = start_date.value;
     };
 });
+
+var end_time = document.getElementById("end_time");
+end_time.addEventListener("change", function() {
+    if (start_date.value == end_date.value) {
+        var start_time = document.getElementById("start_time");
+        var startTime = start_time.value;
+        var endTime = end_time.value;
+        if (endTime < startTime) {
+            alert("End time must be after start time.");
+            end_time.value = start_time.value;
+        };
+    }
+});
